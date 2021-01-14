@@ -1,16 +1,15 @@
 import React from "react";
 import "./App.css";
-import { Redirect, Router } from "@reach/router";
-import { ProductsList } from "./pages/products";
+import { Router } from "@reach/router";
 import { Provider } from "react-redux";
 import { store } from "./common/store";
+import { Home } from "./pages/home";
 
 function App() {
   return (
     <Provider store={store}>
       <Router>
-        <ProductsList path="/products" />
-        <Redirect noThrow from="*" to="/products" />
+        <Home path="/" />
       </Router>
     </Provider>
   );
