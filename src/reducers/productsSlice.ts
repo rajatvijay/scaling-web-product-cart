@@ -4,13 +4,13 @@ import { Product } from "../common/data";
 import { AppThunk } from "../common/store";
 
 type ProductsState = {
-  products: Product[];
+  products: Record<string, Product>;
   state: "idle" | "error" | "success" | "loading";
   error: string | null;
 };
 
 const initialState = {
-  products: [],
+  products: {},
   state: "idle",
   error: null,
 } as ProductsState;
@@ -28,7 +28,13 @@ const productsSlice = createSlice({
     getProductsSuccess(state, action: PayloadAction<Product[]>) {
       const products = action.payload;
       state.state = "success";
-      state.products = products;
+      state.products = products.reduce(
+        (acc, product) => ({
+          ...acc,
+          [product.id]: product,
+        }),
+        {}
+      );
     },
     getProductsError(state, action: PayloadAction<string>) {
       const error = action.payload;
