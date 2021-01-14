@@ -15,11 +15,20 @@ const cartSlice = createSlice({
     deleteItem(state, action: PayloadAction<{ id: string; quantity: number }>) {
       const { id, quantity } = action.payload;
       const currentQuantity = state[id] || 0;
-      state[id] = currentQuantity > quantity ? currentQuantity - quantity : 0;
+      if (currentQuantity > quantity) {
+        state[id] = currentQuantity - quantity;
+      } else {
+        delete state[id];
+      }
+    },
+    flushCart(state) {
+      Object.keys(state).forEach((id) => {
+        delete state[id];
+      });
     },
   },
 });
 
-export const { addItem, deleteItem } = cartSlice.actions;
+export const { addItem, deleteItem, flushCart } = cartSlice.actions;
 
 export const cartReducer = cartSlice.reducer;

@@ -1,5 +1,10 @@
-import { PRODUCTS } from "./data";
+import { Product, PRODUCTS } from "./data";
 
-export const getProducts = () => {
-  return Promise.resolve(PRODUCTS);
+export const getProducts = (): Promise<Product[]> => {
+  return new Promise((resolve) => {
+    setTimeout(() => {
+      resolve(PRODUCTS);
+      // Imitating super slow API
+    }, 2000);
+  });
 };
