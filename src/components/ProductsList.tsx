@@ -1,14 +1,16 @@
 import { RouteComponentProps } from "@reach/router";
-import { Spin } from "antd";
+import { Modal, Spin } from "antd";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { AppDispatch, RootState } from "../common/store";
 import { fetchProducts } from "../reducers/productsSlice";
+import { addUser } from "../reducers/userSlice";
 import { ProductCard } from "./ProductCard";
 
 const mapStateToProps = (state: RootState) => {
   return {
     ...state.products,
+    isLoggedIn: !!state.user.id,
   };
 };
 const connector = connect(mapStateToProps);
@@ -22,7 +24,17 @@ class ProductsList extends React.Component<
     dispatch(fetchProducts());
   }
   handleAddToCart = (productId: string) => {
-    // TODO: Implement me!
+    const { isLoggedIn, dispatch } = this.props;
+    if (!isLoggedIn) {
+      Modal.confirm({
+        title: "Please login to add items to cart!",
+        content: "Click on ok to login",
+        onOk: () => {
+          dispatch(addUser("Some Random User Name"));
+        },
+        onCancel: () => {},
+      });
+    }
   };
   render() {
     const { state, products, error } = this.props;

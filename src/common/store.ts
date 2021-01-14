@@ -5,9 +5,11 @@ import {
   ThunkAction,
 } from "@reduxjs/toolkit";
 import { productsReducer } from "../reducers/productsSlice";
+import { userReducer } from "../reducers/userSlice";
 
 const rootReducer = combineReducers({
   products: productsReducer,
+  user: userReducer,
 });
 
 export const store = configureStore({
