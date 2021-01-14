@@ -1,8 +1,8 @@
-import { RouteComponentProps } from "@reach/router";
-import { Modal, Spin } from "antd";
+import { message, Modal, Spin } from "antd";
 import React from "react";
 import { connect, ConnectedProps } from "react-redux";
 import { AppDispatch, RootState } from "../common/store";
+import { addItem } from "../reducers/cartSlice";
 import { fetchProducts } from "../reducers/productsSlice";
 import { addUser } from "../reducers/userSlice";
 import { ProductCard } from "./ProductCard";
@@ -11,13 +11,13 @@ const mapStateToProps = (state: RootState) => {
   return {
     ...state.products,
     isLoggedIn: !!state.user.id,
+    cart: state.cart,
   };
 };
 const connector = connect(mapStateToProps);
 
 class ProductsList extends React.Component<
-  RouteComponentProps &
-    ConnectedProps<typeof connector> & { dispatch: AppDispatch }
+  ConnectedProps<typeof connector> & { dispatch: AppDispatch }
 > {
   componentDidMount() {
     const { dispatch } = this.props;
@@ -31,9 +31,27 @@ class ProductsList extends React.Component<
         content: "Click on ok to login",
         onOk: () => {
           dispatch(addUser("Some Random User Name"));
+          this.addItemToCart(productId);
         },
         onCancel: () => {},
       });
+    } else {
+      this.addItemToCart(productId);
+    }
+  };
+  addItemToCart = (id: string) => {
+    const { cart, dispatch } = this.props;
+    if (!cart[id]) {
+      dispatch(
+        addItem({
+          id,
+          quantity: 1,
+        })
+      );
+    } else {
+      message.warning(
+        "Item already added to the cart. To increase the quantity go to the cart!"
+      );
     }
   };
   render() {
